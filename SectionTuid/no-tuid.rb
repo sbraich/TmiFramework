@@ -4,11 +4,12 @@ require 'nokogiri'
 
 files = Dir['*.tmx'].each
 #@sourcefile = "q_test.tmx"
-test = 50
-tune = 20
+test = 5000
+tune = 5000
 
 # target dir
-dir = "partition_notuid"
+tt = Time.new.strftime("%Y%m%d-%H%M%S")
+dir = "partition_" + "#{tt}"
 Dir::mkdir("#{dir}") unless File.exists?("#{dir}")
 
 h = Hash.new
@@ -44,24 +45,50 @@ puts d.length
 puts
 #puts d.inspect
 
-c_outfile = File.new("#{dir}/test", "w")
-d_outfile = File.new("#{dir}/tune", "w")
-a_outfile = File.new("#{dir}/train", "w")
+c_outfile = File.new("#{dir}/test.tmx", "w")
+d_outfile = File.new("#{dir}/tune.tmx", "w")
+a_outfile = File.new("#{dir}/train.tmx", "w")
 
+header = %Q{<?xml version="1.0" ?>
+<!DOCTYPE tmx SYSTEM "tmx14.dtd">
+<tmx version="1.4">
+  <header
+    creationtool="TmiFramework.Partition"
+    creationtoolversion="1.1"
+    datatype="unknown"
+    segtype="sentence"
+    adminlang="EN-US"
+    srclang="EN-US"
+    o-tmf="TmiFramework.TMX"
+  >
+  </header>
+  <body>
+}
+
+footer = %Q{  </body>
+</tmx>
+}
+
+c_outfile.puts header
 c.each {|t|
   c_outfile.print "    "
   c_outfile.puts h[t]
   h.delete(t)
 }
+c_outfile.puts footer
 
+d_outfile.puts header
 d.each {|t|
   d_outfile.print "    "
   d_outfile.puts h[t]
   h.delete(t)
 }
+d_outfile.puts footer
  
+a_outfile.puts header
 a.each {|t|
   a_outfile.print "    "
   a_outfile.puts h[t]
   h.delete(t)
 }
+a_outfile.puts footer
