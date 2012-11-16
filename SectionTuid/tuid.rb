@@ -40,18 +40,23 @@ d_outfile = File.new("#{dir}/tune", "w")
 a_outfile = File.new("#{dir}/train", "w")
 
 reader.each do |node|
+  found = false
   if node.name == "tu"
     if c.include?( node.attribute("tuid"))
       c_outfile.print "    "
       c_outfile.puts node.outer_xml()
       c.delete( node.attribute("tuid"))   
+      found = true
     end
-    if d.include?( node.attribute("tuid"))
+#    if d.include?( node.attribute("tuid"))
+    if !found && d.include?( node.attribute("tuid"))
       d_outfile.print "    "
       d_outfile.puts node.outer_xml()
       d.delete( node.attribute("tuid"))
+      found = true
     end
-    if a.include?( node.attribute("tuid"))
+#    if a.include?( node.attribute("tuid"))
+    if !found && a.include?( node.attribute("tuid"))
       a_outfile.print "    "
       a_outfile.puts node.outer_xml()
       a.delete( node.attribute("tuid"))
